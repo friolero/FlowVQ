@@ -1,0 +1,6 @@
+**/__pycache__
+**/outputs
+**/wandb
+**/data
+*.png
+assets

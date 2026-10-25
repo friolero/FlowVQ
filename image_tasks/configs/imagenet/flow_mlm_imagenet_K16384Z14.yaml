@@ -1,0 +1,104 @@
+experiment:
+    project: "MaskBit"
+    name: "imagenet_flowvq_mlm_K16384Z14"
+    max_train_examples: 1_281_167 # total number of imagenet examples
+    save_every: 100_000
+    eval_every: 100_000
+    generate_every: 10_000
+    log_every: 50
+    log_grad_norm_every: 100_000
+    logger: "wandb"
+    wandb_id: ""
+    resume: True
+    vqgan_checkpoint: "outputs/imagenet_flowvq_tokenizer_K16384Z14E1k/checkpoint-1300000/ema_model/pytorch_model.bin"
+
+model:
+    vq_model:
+        model_class: "vqgan+"
+        quantizer_type: "flow"
+        codebook_size: 16384
+        token_size: 14
+        commitment_cost: 0.25
+        entropy_loss_weight: 0.00
+        entropy_loss_temperature: 0.01
+        entropy_gamma: 1.0
+        num_channels: 3  # rgb
+        hidden_channels: 128
+        channel_mult: [1, 1, 2, 2, 4]
+        num_resolutions: 5
+        num_res_blocks: 2
+        sample_with_conv: True
+    
+    mlm_model:
+        model_cls: "bert"
+        hidden_dim: 1024
+        depth: 24
+        heads: 16
+        mlp_dim: 4096
+        dropout: 0.1
+        guidance_scale: 7.1
+        guidance_annealing: "cosine"
+        num_steps: 64
+        train_mask_schedule_strategy: "arccos"
+        gen_mask_schedule_strategy: "arccos"
+        softmax_temperature: 1.0
+        randomize_temperature: 7.8
+        class_label_dropout: 0.1
+        scale_pow: 3.0
+        use_sampling_annealing: False
+        codebook_splits: 1
+        use_prenorm: False
+
+
+losses:
+    mlm:
+        label_smoothing: 0.1
+        sum_splits: False
+
+
+dataset:
+    name: "imagenet"
+    params:
+        train_shards_path_or_url: "data/imagenet_shards/train/imagenet-train-{0000..0252}.tar"
+        eval_shards_path_or_url: "data/imagenet_shards/val/imagenet-val-{0000..0009}.tar"
+        shuffle_buffer_size: 1000
+        num_workers_per_gpu: 8
+        pin_memory: True
+        persistent_workers: True
+    preprocessing:
+        resolution: 256
+        use_aspect_ratio_aug: False
+        use_random_crop: True
+        min_scale: 0.8
+        interpolation: "bicubic"
+
+
+optimizer:
+    name: adamw 
+    params:
+        learning_rate: 1e-4
+        beta1: 0.9
+        beta2: 0.96
+        weight_decay: 0.045
+        epsilon: 1e-8
+
+
+lr_scheduler:
+    scheduler: "cosine_with_minimum"
+    params:
+        learning_rate: ${optimizer.params.learning_rate}
+        warmup_steps: 5000
+
+
+training:
+    gradient_accumulation_steps: 1
+    per_gpu_batch_size: 8
+    mixed_precision: "no"
+    enable_tf32: True
+    use_ema: True
+    seed: 42
+    max_train_steps: 1_350_000
+    overfit_batch: False
+    overfit_batch_num: 1
+    num_generated_images: 8 # Must be smaller than or equal to per_gpu_batch_size
+    max_grad_norm: 1.0
