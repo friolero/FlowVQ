@@ -1,0 +1,10 @@
+# Tested with: torch 2.5.1, torchvision 0.20.1, zuko 1.4.1, einops 0.8.2, numpy 2.2.6,
+# scikit-learn 1.5.2, matplotlib 3.10.9, tqdm 4.69.0 (Python 3.11)
+torch>=2.0
+torchvision
+zuko>=1.4
+einops
+numpy
+scikit-learn
+matplotlib
+tqdm
