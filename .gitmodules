@@ -1,6 +1,8 @@
 [submodule "high_precision_tasks/action_tokenization"]
 	path = high_precision_tasks/action_tokenization
 	url = https://github.com/friolero/action_tokenization.git
+	branch = main
 [submodule "high_precision_tasks/material_tokenization"]
 	path = high_precision_tasks/material_tokenization
 	url = https://github.com/friolero/material_tokenization.git
+	branch = main

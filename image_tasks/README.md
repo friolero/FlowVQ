@@ -100,7 +100,7 @@ Then convert into [webdataset](https://github.com/webdataset/webdataset) format 
 3. ### Image Generation with MLM
 
     ```python3
-    CUDA_VISIBLE_DEVICES=0 PYTHONPATH=./ WORKSPACE=./ accelerate launch --num_machines=1  --machine_rank=0 --main_process_ip=127.0.0.1 --main_process_port=9999 --same_network scripts/train_mlm.py config=./configs/imagenet/flow_mlm_imagenet_K16384Z14.yaml training.per_gpu_batch_size=16 training.gradient_accumulation_steps=8 experiment.vqgan_checkpoint=outputs/{RUN_NAME}/checkpoint-X/ema_model/pytorch_model.bin
+    CUDA_VISIBLE_DEVICES=0 PYTHONPATH=./ WORKSPACE=./ accelerate launch --num_machines=1  --machine_rank=0 --main_process_ip=127.0.0.1 --main_process_port=9999 --same_network scripts/train_generation.py config=./configs/imagenet/flow_mlm_imagenet_K16384Z14.yaml training.per_gpu_batch_size=16 training.gradient_accumulation_steps=8 experiment.vqgan_checkpoint=outputs/{RUN_NAME}/checkpoint-X/ema_model/pytorch_model.bin
     ```
 
 ## Pretrained Checkpoints

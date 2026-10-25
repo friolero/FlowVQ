@@ -3,4 +3,5 @@
 **/wandb
 **/data
 *.png
-assets
+assets/*
+!assets/main_diagram.png
